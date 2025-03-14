@@ -8,25 +8,20 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function profile($id, $name)
+    public function index()
     {
-        // $data = [
-        //     'username' => 'customer-1',
-        //     'nama' => 'Pelanggan',
-        //     'password' => Hash::make('12345'),
-        //     'level_id' => 4
-        // ];
-        // UserModel::insert($data);
-
-        // $user = UserModel::all();
-        // return view('user', ['data' => $user]);
-
         $data = [
-            'nama' => 'Pelanggan Pertama',
+            'level_id' => 2,
+            'username' => 'manager_tiga',
+            'nama' => 'Manager 3',
+            'password' => Hash::make('12345'), // Pastikan password ter-hash
         ];
-        UserModel::where('username', 'customer-1')->update($data);
+
+        UserModel::create($data); // Gunakan create() agar timestamps otomatis diisi
 
         $user = UserModel::all();
         return view('user', ['data' => $user]);
     }
+
 }
+    
