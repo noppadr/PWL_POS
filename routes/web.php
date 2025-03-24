@@ -42,3 +42,14 @@ Route::prefix('kategori')->group(function () {
     Route::put('/{id}', [KategoriController::class, 'update']);
     Route::delete('/{id}', [KategoriController::class, 'destroy']);
 });
+
+Route::prefix('supplier')->group(function () {
+    Route::get('/', [SupplierController::class, 'index']);
+    Route::post('/list', [SupplierController::class, 'list']);
+    Route::get('/create', [SupplierController::class, 'create']);
+    Route::post('/', [SupplierController::class, 'store']);
+    Route::get('/{id}', [SupplierController::class, 'show']);
+    Route::get('/{id}/edit', [SupplierController::class, 'edit']);
+    Route::put('/{id}', [SupplierController::class, 'update']);
+    Route::delete('/{id}', [SupplierController::class, 'destroy']);
+});
