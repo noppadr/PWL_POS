@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\LevelModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Psy\Readline\Userland;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
+   // Menampilkan halaman awal user
     public function index()
     {
         $breadcrumb = (object) [
@@ -20,17 +23,28 @@ class UserController extends Controller
             'title' => 'Daftar user yang terdaftar dalam sistem'
         ];
 
-        $activeMenu = 'user';
+        $activeMenu = 'user'; // Sset menu yang sedang aktif
 
-        return view('user.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        $level = LevelModel::all(); // ambil data leveluntuk filter level
+
+        return view('user.index', [
+            'breadcrumb' => $breadcrumb, 
+            'page' => $page, 
+            'level' => $level, 
+            'activeMenu' => $activeMenu]);
     }
 
   //Ambil data user dalam bentuk json untuk datatables
   public function list(Request $request)
   {
-      $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
-          ->with('level');
+    $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
+        ->with('level');
 
+    // Filtering data user berdasarkan level_id
+    if ($request->level_id) {
+        $users->where('level_id', $request->level_id);
+    }
+      
       return DataTables::of($users)
           // Menambahkan kolom index / nomor urut (default nama kolom: DT_RowIndex)
           ->addIndexColumn()
@@ -115,6 +129,7 @@ class UserController extends Controller
         'user' => $user, 
         'activeMenu' => $activeMenu]); 
 }
+
 // Menampilkan halaman form edit user
 public function edit(string $id)
 {
