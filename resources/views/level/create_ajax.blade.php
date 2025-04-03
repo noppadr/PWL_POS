@@ -11,14 +11,12 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Level Kode</label>
-                    <input value="" type="text" name="level_kode" id="level_kode" class="form-control"
-                        required>
+                    <input value="" type="text" name="level_kode" id="level_kode" class="form-control" required>
                     <small id="error-level_kode" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
                     <label>Level Nama</label>
-                    <input value="" type="text" name="level_nama" id="level_nama" class="form-control"
-                        required>
+                    <input value="" type="text" name="level_nama" id="level_nama" class="form-control" required>
                     <small id="error-level_nama" class="error-text form-text text-danger"></small>
                 </div>
             </div>
@@ -33,15 +31,8 @@
     $(document).ready(function() {
         $("#form-tambah").validate({
             rules: {
-                level_kode: {
-                    required: true,
-                    maxlength: 3
-                },
-                level_nama: {
-                    required: true,
-                    minlength: 3,
-                    maxlength: 100
-                },
+                level_kode: {required: true, maxlength: 3},
+                level_nama: {required: true, minlength: 3, maxlength: 100},
             },
             submitHandler: function(form) {
                 $.ajax({
@@ -60,7 +51,7 @@
                         } else {
                             $('.error-text').text('');
                             $.each(response.msgField, function(prefix, val) {
-                                $('#error-' + prefix).text(val[0]);
+                                $('#error-'+prefix).text(val[0]);
                             });
                             Swal.fire({
                                 icon: 'error',
