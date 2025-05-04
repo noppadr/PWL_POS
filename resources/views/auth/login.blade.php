@@ -14,8 +14,9 @@ ack">
     <!-- icheck bootstrap -->
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- SweetAlert2 -->
-    <link rel="stylesheet" href="{{ asset('adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-
-    4.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-
+            4.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
 </head>
@@ -67,7 +68,11 @@ ack">
         </div>
         <!-- /.card -->
     </div>
+    <p class="mt-3 mb-0 text-center">
+        Belum punya akun? <a href="{{ url('register') }}">Daftar Sekarang</a>
+    </p>
     <!-- /.login-box -->
+
     <!-- jQuery -->
     <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->
@@ -79,12 +84,14 @@ ack">
     <script src="{{ asset('adminlte/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
+
     <script>
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
         $(document).ready(function() {
             $("#form-login").validate({
                 rules: {
@@ -143,4 +150,5 @@ ack">
         });
     </script>
 </body>
+
 </html>

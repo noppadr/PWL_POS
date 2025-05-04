@@ -1,24 +1,26 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::pattern('id', '[0-9]+'); // ketika ada paramater id, maka hanya bisa diisi angka
-Route::get('login', [AuthController::class, 'login'])->name('login');
-Route::post('login', [AuthController::class, 'postlogin']);
-Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::pattern('id', '[0-9]+');
 
-Route::middleware(['auth'])->group(function () { // semua route di dalam group ini harus login terlebih dahulu
+Route::get('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/postlogin', [AuthController::class, 'postlogin']);
+Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::get('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'postRegister']);
+
+Route::middleware('auth')->group(function () {
 
     Route::get('/', [WelcomeController::class, 'index']);
 
-    // artinya semua route di dalam group ini harus memiliki role ADM (admin)
     Route::prefix('user')->group(function () {
         Route::middleware(['authorize:ADM'])->group(function () {
             Route::get('/', [UserController::class, 'index']);
@@ -41,7 +43,7 @@ Route::middleware(['auth'])->group(function () { // semua route di dalam group i
 
 
     Route::prefix('level')->group(function () {
-        Route::middleware(['authorize:ADM'])->group(function () {
+        Route::middleware(['authorize:ADM'])->group(function() {
             Route::get('/', [LevelController::class, 'index']);
             Route::post('/list', [LevelController::class, 'list']);
             Route::get('/create', [LevelController::class, 'create']);
@@ -61,7 +63,7 @@ Route::middleware(['auth'])->group(function () { // semua route di dalam group i
     });
 
     Route::prefix('kategori')->group(function () {
-        Route::middleware(['authorize:ADM,MNG'])->group(function () {
+        Route::middleware(['authorize:ADM,MNG'])->group(function() {
             Route::get('/', [KategoriController::class, 'index']);
             Route::post('/list', [KategoriController::class, 'list']);
             Route::get('/create', [KategoriController::class, 'create']);
@@ -81,7 +83,7 @@ Route::middleware(['auth'])->group(function () { // semua route di dalam group i
     });
 
     Route::prefix('supplier')->group(function () {
-        Route::middleware(['authorize:ADM,MNG'])->group(function () {
+        Route::middleware(['authorize:ADM,MNG'])->group(function() {
             Route::get('/', [SupplierController::class, 'index']);
             Route::post('/list', [SupplierController::class, 'list']);
             Route::get('/create', [SupplierController::class, 'create']);
@@ -101,7 +103,7 @@ Route::middleware(['auth'])->group(function () { // semua route di dalam group i
     });
 
     Route::prefix('barang')->group(function () {
-        Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
+        Route::middleware(['authorize:ADM,MNG,STF'])->group(function() {
             Route::get('/', [BarangController::class, 'index']);
             Route::post('/list', [BarangController::class, 'list']);
             Route::get('/create', [BarangController::class, 'create']);
