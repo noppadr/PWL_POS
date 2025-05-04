@@ -39,7 +39,7 @@ class UserModel extends Authenticatable
      */
     public function hasRole(string $role): bool
     {
-        return $this->level->level_nama === $role;
+        return $this->level->level_kode === $role;
     }
 
     /**
