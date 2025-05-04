@@ -11,7 +11,7 @@ class AuthorizeUser
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  
      */
     public function handle(Request $request, Closure $next, $role = ''): Response
     {   
@@ -27,4 +27,3 @@ class AuthorizeUser
         abort(403, 'Forbidden. Kamu tidak punya akses ke halaman ini');
     }
 }
-
