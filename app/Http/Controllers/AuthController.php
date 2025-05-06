@@ -34,7 +34,7 @@ class AuthController extends Controller
                 'message' => 'Login Gagal'
             ]);
         }
-        return redirect('login');
+        return redirect('auth.login');
     }
     public function logout(Request $request)
     {
