@@ -12,12 +12,13 @@ use Illuminate\Support\Facades\Route;
 Route::pattern('id', '[0-9]+');
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/postlogin', [AuthController::class, 'postlogin']);
+Route::post('/login', [AuthController::class, 'postlogin']);
 Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::get('/register', [AuthController::class, 'register']);
 Route::post('/register', [AuthController::class, 'postRegister']);
 
 Route::middleware('auth')->group(function () {
+
 
     Route::get('/', [WelcomeController::class, 'index']);
 
@@ -119,9 +120,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']);
             Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']);
             Route::get('/{id}/show_ajax', [BarangController::class, 'show_ajax']);
-            Route::get('/import', [BarangController::class, 'import']);
-            Route::post('/import_ajax', [BarangController::class, 'import_ajax']);
-            Route::get('/export_excel', [BarangController::class, 'export_excel']);
+            Route::get('/import', [BarangController::class, 'import']); // ajax form upload excel
+            Route::post('/import_ajax', [BarangController::class, 'import_ajax']); // ajax import excel
+            Route::get('/export_excel', [BarangController::class, 'export_excel']); // export excel
         });
     });
 });

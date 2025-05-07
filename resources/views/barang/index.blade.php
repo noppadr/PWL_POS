@@ -6,7 +6,8 @@
             <h3>{{ $page->title }}</h3>
             <div class="card-tools">
                 <button onclick="modalAction('{{ url('/barang/import') }}')" class="btn btn-info">Import Barang</button>
-                <a class="btn btn-primary" href="{{ url('barang/export_excel') }}"><i class="fa fa-file-excel"></i> Export Barang</a>
+                <a class="btn btn-primary" href="{{ url('barang/export_excel') }}"><i class="fa fa-file-excel"></i> Export
+                    Barang</a>
                 <button onclick="modalAction('{{ url('barang/create_ajax') }}')" class="btn btn-success">Tambah
                     Ajax</button>
             </div>

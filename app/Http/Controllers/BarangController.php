@@ -307,55 +307,72 @@ class BarangController extends Controller
     public function import_ajax(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
+            if (!$request->hasFile('file_item')) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No file uploaded',
+                    'msgField' => ['file_item' => ['Please select a file']]
+                ]);
+            }
+
             $rules = [
-                'file_barang' => ['required', 'mimes:xlsx', 'max:1024']
+                'file_item' => ['required', 'mimes:xlsx,xls', 'max:1024']
             ];
 
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Validasi Gagal',
+                    'message' => 'Validation Failed',
                     'msgField' => $validator->errors()
                 ]);
             }
 
-            $file = $request->file('file_barang');
+            try {
+                $file = $request->file('file_item');
+                $reader = IOFactory::createReader('Xlsx');
+                $reader->setReadDataOnly(true);
+                $spreadsheet = $reader->load($file->getRealPath());
+                $sheet = $spreadsheet->getActiveSheet();
+                $data = $sheet->toArray(null, false, true, true);
 
-            $reader = IOFactory::createReader('Xlsx');
-            $reader->setReadDataOnly(true);
-            $spreadsheet = $reader->load($file->getRealPath());
-            $sheet = $spreadsheet->getActiveSheet();
+                $insert = [];
+                if (count($data) > 1) {
+                    foreach ($data as $row => $value) {
+                        if ($row > 1) {
+                            $insert[] = [
+                                'kategori_id' => $value['A'],
+                                'barang_kode' => $value['B'],
+                                'barang_nama' => $value['C'],
+                                'harga_beli' => $value['D'],
+                                'harga_jual' => $value['E'],
+                                'created_at' => now(),
+                                'updated_at' => now()
+                            ];
+                        }
+                    }
 
-            $data = $sheet->toArray(null, false, true, true);
-
-            $insert = [];
-            if (count($data) > 1) {
-                foreach ($data as $baris => $value) {
-                    if ($baris > 1) {
-                        $insert[] = [
-                            'kategori_id' => $value['A'],
-                            'barang_kode' => $value['B'],
-                            'barang_nama' => $value['C'],
-                            'harga_beli' => $value['D'],
-                            'harga_jual' => $value['E'],
-                            'created_at' => now(),
-                        ];
+                    if (count($insert) > 0) {
+                        BarangModel::insertOrIgnore($insert);
+                        return response()->json([
+                            'status' => true,
+                            'message' => 'Data imported successfully'
+                        ]);
                     }
                 }
 
-                if (count($insert) > 0) {
-                    BarangModel::insertOrIgnore($insert);
-                }
-
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Data berhasil diimport'
-                ]);
-            } else {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Tidak ada data yang diimport'
+                    'message' => 'No data imported'
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Import failed: ' . $e->getMessage(),
+                    'debug' => [
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine()
+                    ]
                 ]);
             }
         }
@@ -364,6 +381,7 @@ class BarangController extends Controller
 
     public function export_excel()
     {
+        // ambil data barang yang akan di export
         $barang = BarangModel::select("kategori_id", "barang_kode", "barang_nama", "harga_beli", "harga_jual")
             ->orderBy('kategori_id')
             ->with('kategori')
