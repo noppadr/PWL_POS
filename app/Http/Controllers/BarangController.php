@@ -387,8 +387,9 @@ class BarangController extends Controller
             ->with('kategori')
             ->get();
 
+        // load library excel
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+        $sheet = $spreadsheet->getActiveSheet(); // ambil sheet yang aktif
 
         $sheet->setCellValue('A1', 'No');
         $sheet->setCellValue('B1', 'Kode Barang');
@@ -397,10 +398,10 @@ class BarangController extends Controller
         $sheet->setCellValue('E1', 'Harga Jual');
         $sheet->setCellValue('F1', 'Kategori');
 
-        $sheet->getStyle("A1:F1")->getFont()->setBold(true);
+        $sheet->getStyle("A1:F1")->getFont()->setBold(true); // bold header
 
-        $no = 1;
-        $baris = 2;
+        $no = 1;    // nomor data dimulai dari 1
+        $baris = 2; // baris data dimulai dari baris ke 2
         foreach ($barang as $key => $value) {
             $sheet->setCellValue("A" . $baris, $no);
             $sheet->setCellValue('B' . $baris, $value->barang_kode);
@@ -413,7 +414,7 @@ class BarangController extends Controller
         }
 
         foreach (range('A', 'F') as $columnID) {
-            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+            $sheet->getColumnDimension($columnID)->setAutoSize(true); // set auto size untuk kolom
         }
 
         $sheet->setTitle("Data Barang"); // set title sheet
