@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Psy\Readline\Userland;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth; // Add Auth facade
+use Illuminate\Support\Facades\Storage; // Add Storage facade
 
 class UserController extends Controller
 {
@@ -277,10 +279,10 @@ class UserController extends Controller
 
             $check = UserModel::find($id);
             if ($check) {
-                if(!$request->filled('password')) {
+                if (!$request->filled('password')) {
 
                     $request->request->remove('password');
-                } 
+                }
 
                 $check->update($request->all());
                 return response()->json([
@@ -291,13 +293,14 @@ class UserController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Data tidak ditemukan'
-                ]); 
+                ]);
             }
         }
         return redirect('/');
     }
 
-    public function confirm_ajax(string $id) {
+    public function confirm_ajax(string $id)
+    {
         $user = UserModel::find($id);
 
         return view('user.confirm_ajax')
@@ -307,7 +310,7 @@ class UserController extends Controller
     public function delete_ajax(Request $request, $id)
     {
         // cek apakah request dari ajax
-        if ($request->ajax() || $request->wantsJson()) {       
+        if ($request->ajax() || $request->wantsJson()) {
             $user = UserModel::find($id);
             if ($user) {
                 $user->delete();
@@ -324,4 +327,34 @@ class UserController extends Controller
         }
         return redirect('/');
     }
+
+    /**
+     * Update the user's profile photo.
+     */
+
+     public function updateProfilePhoto(Request $request)
+     {
+         $request->validate([
+             'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate the image
+         ]);
+ 
+         $user = Auth::user(); // Get the authenticated user
+ 
+         if ($request->hasFile('profile_photo')) {
+             // Delete old photo if it exists and is not the default
+             if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
+                  Storage::disk('public')->delete($user->profile_image);
+             }
+ 
+             // Store the new photo in storage/app/public/profile_images
+             $path = $request->file('profile_photo')->store('profile_images', 'public');
+ 
+             // Update the user's profile_image path in the database
+             $user->update(['profile_image' => $path]);
+ 
+             return back()->with('success', 'Profile photo updated successfully.');
+         }
+ 
+         return back()->with('error', 'Failed to upload profile photo.');
+     }
 }

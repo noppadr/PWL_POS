@@ -1,33 +1,38 @@
-<?php
+    <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+    use Illuminate\Database\Migrations\Migration;
+    use Illuminate\Database\Schema\Blueprint;
+    use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    return new class extends Migration
     {
-        Schema::create('m_user', function (Blueprint $table) {
-            $table->id('user_id');
-            $table->unsignedBigInteger('level_id')->index();
-            $table->string('username', 20)->unique();
-            $table->string('nama', 100);
-            $table->string('password');
-            $table->timestamps();
+        /**
+         * Run the migrations.
+         */
+        public function up(): void
+        {
+            Schema::create('m_user', function (Blueprint $table) {
+                $table->id('user_id');
+                $table->unsignedBigInteger('level_id')->index();
+                $table->string('username', 20)->unique();
+                $table->string('nama', 100);
+                $table->string('password');
+                $table->string('profile_image')->nullable();
+                $table->timestamps();
 
-            $table->foreign('level_id')->references('level_id')->on('m_level');
-        });
-    }
+                $table->foreign('level_id')->references('level_id')->on('m_level');
+            });
+        }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('m_user');
-    }
-};
+        /**
+         * Reverse the migrations.
+         */
+        public function down(): void
+        {
+            // Schema::table('m_user', function (Blueprint $table) {
+            //     $table->dropForeign(['level_id']);
+            //     $table->dropColumn('profile_image');
+            // });
+            Schema::dropIfExists('m_user');
+        }
+    };
