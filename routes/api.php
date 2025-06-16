@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\BarangController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -51,3 +52,5 @@ Route::post('barang', [BarangController::class, 'store']);
 Route::get('barang/{id}', [BarangController::class, 'show']);
 Route::put('barang/{id}', [BarangController::class, 'update']);
 Route::delete('barang/{id}', [BarangController::class, 'destroy']);
+
+Route::post('/register1', App\Http\Controllers\Api\RegisterController::class)->name('register1');
